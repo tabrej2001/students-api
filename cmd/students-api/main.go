@@ -31,9 +31,10 @@ func main() {
 	router.HandleFunc("POST /api/students", students.New(storage))
 	router.HandleFunc("GET /api/students/{id}", students.GetStudentByID(storage))
 	router.HandleFunc("GET /api/students", students.GetStudentList(storage))
+	router.HandleFunc("PATCH /api/students/{id}", students.UpdateStudentById(storage))
 
 	fmt.Println("Server started")
-	slog.Info("Server started at por t", slog.String("address", cfg.Address))
+	slog.Info("Server started at port", slog.String("address", cfg.Address))
 
 	done := make(chan os.Signal, 1)
 

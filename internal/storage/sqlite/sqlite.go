@@ -106,3 +106,42 @@ func (s *Sqlite) GetStudentList() ([]types.Students, error) {
 
 	return students, nil
 }
+
+func (s *Sqlite) UpdateStudent(id int64, student types.Students) (types.Students, error) {
+	stmt, err := s.Db.Prepare(`
+	UPDATE students 
+	SET name = ?, email = ?, age = ?
+	WHERE id = ?
+	`)
+	if err != nil {
+		return types.Students{}, err
+	}
+
+	defer stmt.Close()
+
+	result, err := stmt.Exec(
+		student.Name,
+		student.Email,
+		student.Age,
+		id,
+	)
+	if err != nil {
+		return types.Students{}, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return types.Students{}, err
+	}
+
+	if rowsAffected == 0 {
+		return types.Students{}, fmt.Errorf("no student with id %d", id)
+	}
+
+	updatedStudent, err := s.GetStudentById(id)
+	if err != nil {
+		return types.Students{}, err
+	}
+
+	return updatedStudent, nil
+}
