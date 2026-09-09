@@ -29,6 +29,7 @@ func main() {
 	router := http.NewServeMux()
 
 	router.HandleFunc("POST /api/students", students.New(storage))
+	router.HandleFunc("GET /api/students/{id}", students.GetStudentByID(storage))
 
 	fmt.Println("Server started")
 	slog.Info("Server started at por t", slog.String("address", cfg.Address))
